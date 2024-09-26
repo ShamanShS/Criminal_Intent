@@ -1,4 +1,4 @@
-package com.shamanshs.criminalintent.CrimeListViewModel
+package com.shamanshs.criminalintent.crimelistviewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

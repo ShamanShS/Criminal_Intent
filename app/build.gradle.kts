@@ -1,7 +1,10 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
 }
+
 
 android {
     namespace = "com.shamanshs.criminalintent"
@@ -26,6 +29,11 @@ android {
             )
         }
     }
+    ksp{
+        arg("room.schemaLocation",
+                "some/path/goes/here/")
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -44,6 +52,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler.v250)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
