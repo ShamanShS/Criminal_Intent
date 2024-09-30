@@ -105,7 +105,7 @@ class CrimeListFragment : Fragment() {
         }
     }
 
-    private inner class CrimeAdapter : ListAdapter<Crime, CrimeHolder>(DiffCallBack){
+    private inner class CrimeAdapter : ListAdapter<Crime, CrimeHolder>(DiffCallBack) {
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
