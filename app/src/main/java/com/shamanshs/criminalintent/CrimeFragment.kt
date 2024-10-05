@@ -1,5 +1,6 @@
 package com.shamanshs.criminalintent
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,16 +12,19 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.shamanshs.criminalintent.crimeviewmodel.CrimeDetailViewModel
 import com.shamanshs.criminalintent.crimeviewmodel.CrimeDetailViewModelFactory
+import java.util.Date
 import java.util.UUID
 
 private const val TAG = "CrimeFragment"
 private const val ARG_CRIME_ID = "crime_id"
+private const val REQUEST_DATE = "dialog_date"
 
-class CrimeFragment : Fragment() {
+class CrimeFragment : Fragment(), FragmentResultListener {
     private lateinit var crime: Crime
     private lateinit var titleField: EditText
     private lateinit var dateButton: Button
@@ -48,10 +52,6 @@ class CrimeFragment : Fragment() {
         titleField = view.findViewById<EditText>(R.id.crime_title)!!
         dateButton = view.findViewById<Button>(R.id.crime_date)!!
         solvedCheckBox = view.findViewById(R.id.crime_solved)
-        dateButton.apply {
-            text = crime.date.toString()
-            isEnabled = false
-        }
         return view
     }
 
@@ -66,6 +66,7 @@ class CrimeFragment : Fragment() {
                 }
             }
         )
+        childFragmentManager.setFragmentResultListener(REQUEST_DATE, viewLifecycleOwner, this)
     }
 
     override fun onStart() {
@@ -88,6 +89,10 @@ class CrimeFragment : Fragment() {
         }
         titleField.addTextChangedListener(titleWatcher)
 
+        dateButton.setOnClickListener {
+            DatePickerFragment.newInstance(crime.date, REQUEST_DATE).show(childFragmentManager, REQUEST_DATE)
+        }
+
         solvedCheckBox.apply {
             setOnCheckedChangeListener{_, isChecked ->
                 crime.isSolved = isChecked
@@ -99,6 +104,7 @@ class CrimeFragment : Fragment() {
         super.onStop()
         crimeDetailViewModel.saveCrime(crime)
     }
+
 
     private fun updateUI() {
         titleField.setText(crime.title)
@@ -117,6 +123,18 @@ class CrimeFragment : Fragment() {
             }
             return CrimeFragment().apply {
                 arguments = args
+            }
+        }
+
+
+    }
+
+    override fun onFragmentResult(requestKey: String, result: Bundle) {
+        when(requestKey) {
+            REQUEST_DATE -> {
+                Log.d(TAG, "received result for $requestKey")
+                crime.date = DatePickerFragment.getSelectedDate(result)!!
+                updateUI()
             }
         }
     }

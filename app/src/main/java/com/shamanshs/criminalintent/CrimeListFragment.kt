@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -50,8 +49,6 @@ class CrimeListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_crime_list, container, false)
         crimeRecyclerView = view.findViewById<RecyclerView>(R.id.crime_recycle_view)!!
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
-
-//        updateUI()
         crimeRecyclerView.adapter = adapter
         return view
     }
@@ -59,14 +56,13 @@ class CrimeListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         crimeListViewModel.crimeListLiveData.observe(
-            viewLifecycleOwner,
-            Observer { crimes ->
-                crimes?.let{
-                    Log.i(TAG, "Got crimes${crimes.size}")
-                    updateUI(crimes)
-                }
+            viewLifecycleOwner
+        ) { crimes ->
+            crimes?.let {
+                Log.i(TAG, "Got crimes${crimes.size}")
+                updateUI(crimes)
             }
-        )
+        }
     }
 
     override fun onDetach() {
