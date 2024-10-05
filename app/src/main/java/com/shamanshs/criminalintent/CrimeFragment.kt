@@ -23,6 +23,7 @@ import java.util.UUID
 private const val TAG = "CrimeFragment"
 private const val ARG_CRIME_ID = "crime_id"
 private const val REQUEST_DATE = "dialog_date"
+private const val REQUEST_TIME = "dialog_time"
 
 class CrimeFragment : Fragment(), FragmentResultListener {
     private lateinit var crime: Crime
@@ -67,6 +68,7 @@ class CrimeFragment : Fragment(), FragmentResultListener {
             }
         )
         childFragmentManager.setFragmentResultListener(REQUEST_DATE, viewLifecycleOwner, this)
+        childFragmentManager.setFragmentResultListener(REQUEST_TIME, viewLifecycleOwner, this)
     }
 
     override fun onStart() {
@@ -92,6 +94,7 @@ class CrimeFragment : Fragment(), FragmentResultListener {
         dateButton.setOnClickListener {
             DatePickerFragment.newInstance(crime.date, REQUEST_DATE).show(childFragmentManager, REQUEST_DATE)
         }
+
 
         solvedCheckBox.apply {
             setOnCheckedChangeListener{_, isChecked ->
@@ -134,6 +137,11 @@ class CrimeFragment : Fragment(), FragmentResultListener {
             REQUEST_DATE -> {
                 Log.d(TAG, "received result for $requestKey")
                 crime.date = DatePickerFragment.getSelectedDate(result)!!
+                TimePickerFragment.newInstance(crime.date, REQUEST_TIME).show(childFragmentManager, REQUEST_TIME)
+            }
+            REQUEST_TIME -> {
+                Log.d(TAG, "received result for $requestKey")
+                crime.date = TimePickerFragment.getSelectedTime(result)!!
                 updateUI()
             }
         }
